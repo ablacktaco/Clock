@@ -24,7 +24,6 @@ class SettingLabelViewController: UIViewController, UITextFieldDelegate {
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        userData.tempAlarm!.alarmLabel = alarmLabelTextField.text!
         navigationController?.popViewController(animated: true)
         return true
     }

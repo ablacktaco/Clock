@@ -10,38 +10,17 @@ import Foundation
 
 struct AlarmData: Codable {
     
-    var alarmTime: String
-    var alarmRepeat: String
-    var alarmRepeatState: [Bool]
-    var alarmLabel: String
-    var alarmSound: String
-    var snoozeSwitch: Bool
-    var alarmSwitch: Bool
+    var alarmTime: Time = Time()
+    var alarmRepeat: String = "Never"
+    var alarmRepeatState: [Bool] = Array(repeating: false, count: 7)
+    var alarmLabel: String = "Alarm"
+    var alarmSound: String = UserData.shared.defaultAlarmSound
+    var snoozeSwitch: Bool = true
+    var alarmSwitch: Bool = true
     
-    init(alarmTime: String,
-         alarmRepeat: String,
-         alarmRepeatState: [Bool],
-         alarmLabel: String,
-         alarmSound: String,
-         snoozeSwitch: Bool,
-         alarmSwitch: Bool) {
-        self.alarmTime = alarmTime
-        self.alarmRepeat = alarmRepeat
-        self.alarmRepeatState = alarmRepeatState
-        self.alarmLabel = alarmLabel
-        self.alarmSound = alarmSound
-        self.snoozeSwitch = snoozeSwitch
-        self.alarmSwitch = alarmSwitch
-    }
-    
-    init() {
-        self.init(alarmTime: "",
-                  alarmRepeat: "Never",
-                  alarmRepeatState: Array(repeating: false, count: 7),
-                  alarmLabel: "Alarm",
-                  alarmSound: UserData.shared.defaultAlarmSound,
-                  snoozeSwitch: true,
-                  alarmSwitch: true)
+    struct Time: Codable {
+        var alarmHour: Int = 0
+        var alarmMinute: Int = 0
     }
     
 }

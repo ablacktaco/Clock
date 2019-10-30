@@ -10,7 +10,6 @@ import UIKit
 
 class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    var index: Int?
     let userData = UserData.shared
     @IBOutlet var alarmTableView: UITableView!
     @IBOutlet var tableViewBackground: UIView!
@@ -25,21 +24,36 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! AlarmCell
         
         let data = userData.alarmData[indexPath.row]
-        cell.timeLabel.text = data.alarmTime
-        cell.descriptionLabel.text = "\(data.alarmLabel),\(data.alarmRepeat)"
+        let dateFormatter = DateFormatter()
+
+        dateFormatter.dateFormat = "h:mma"
         
-        let indicator = UIImageView(frame:CGRect(x: 0, y: 0, width: 30, height: 30));
+        let dateComponents = DateComponents(calendar: Calendar.current, hour: data.alarmTime.alarmHour, minute: data.alarmTime.alarmMinute)
+        
+        cell.timeLabel.text = dateFormatter.string(from: dateComponents.date!)
+        if data.alarmSwitch == false {
+            cell.timeLabel.textColor = .lightGray
+        }
+        if data.alarmRepeat == "Never" {
+            cell.descriptionLabel.text = "\(data.alarmLabel)"
+        } else {
+            cell.descriptionLabel.text = "\(data.alarmLabel),\(data.alarmRepeat)"
+        }
+        
+        let accessorySwitch = UISwitch()
+//        accessorySwitch.tag = indexPath.row
+        accessorySwitch.isOn = data.alarmSwitch
+//        accessorySwitch.addTarget(self, action: #selector(toChangeAlarmState(_:)), for: .valueChanged)
+        cell.accessoryView = accessorySwitch
+        
+        let indicator = UIImageView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
         indicator.image = UIImage(named: "Indicator")
-        let switchAccessory = UISwitch()
-        switchAccessory.isOn = true
+        cell.editingAccessoryView = indicator
         
-        cell.accessoryView = tableView.isEditing ? indicator : switchAccessory
         return cell
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
+    fileprivate func setTableBackground() {
         if userData.alarmData.count == 0 {
             alarmTableView.backgroundView = tableViewBackground
             alarmTableView.separatorStyle = .none
@@ -47,26 +61,30 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
             alarmTableView.backgroundView = UIView()
             alarmTableView.separatorStyle = .singleLine
         }
+    }
+    
+//    @objc func toChangeAlarmState(_ sender: UISwitch) {
+//        userData.alarmData[sender.tag].alarmSwitch.toggle()
+//        alarmTableView.reloadRows(at: [[sender.tag, 0]], with: .fade)
+//    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        setTableBackground()
         alarmTableView.tableFooterView = UIView()
         
         alarmTableView.allowsSelection = false
         alarmTableView.allowsSelectionDuringEditing = true
-        let b = UINavigationBarAppearance()
-//        b.configureWithDefaultBackground()
-        navigationItem.scrollEdgeAppearance = b
-        navigationController?.navigationBar.scrollEdgeAppearance = b
-        navigationController?.navigationBar.standardAppearance = b
-//        navigationController?.navigationBar.b
-//        alarmTableView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
         
         navigationController?.navigationBar.prefersLargeTitles = true
-        
         navigationController?.navigationBar.shadowImage = UIImage()
     }
     
     @IBAction func becomeEditMode(_ sender: UIBarButtonItem) {
         alarmTableView.isEditing.toggle()
         editButton.title = alarmTableView.isEditing ? "Done" : "Edit"
+        alarmTableView.reloadData()
     }
     
     @IBAction func addAlarm(_ sender: UIBarButtonItem) {
@@ -93,6 +111,7 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         if editingStyle == .delete {
             userData.alarmData.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
+            setTableBackground()
         }
     }
 

@@ -1,14 +1,19 @@
 //
-//  AlarmCell.swift
+//  SettingSnoozeCell.swift
 //  Clock
 //
-//  Created by 陳姿穎 on 2019/10/28.
+//  Created by 陳姿穎 on 2019/10/29.
 //  Copyright © 2019 陳姿穎. All rights reserved.
 //
 
 import UIKit
 
-class AlarmCell: UITableViewCell {
+class SettingSnoozeCell: UITableViewCell {
+
+    @IBOutlet var snoozeSwitch: UISwitch!
+    @IBAction func toSwitchSnoozeState(_ sender: UISwitch) {
+        UserData.shared.tempAlarm!.snoozeSwitch = sender.isOn
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -18,8 +23,4 @@ class AlarmCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
 
-    @IBOutlet var timeLabel: UILabel!
-    @IBOutlet var descriptionLabel: UILabel!
-    
 }
-

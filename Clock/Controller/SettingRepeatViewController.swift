@@ -50,6 +50,10 @@ class SettingRepeatViewController: UIViewController, UITableViewDataSource, UITa
                 return " Never"
             } else if condition == Array(repeating: true, count: 7) {
                 return " Everyday"
+            } else if condition == [true, true, true, true, true, false, false] {
+                return " Weekdays"
+            } else if condition == [false, false, false, false, false, true, true] {
+                return " Weekends"
             } else {
                 var repeatDay = ""
                 for i in 0..<condition.count {

@@ -13,28 +13,11 @@ class SettingAlarmViewController: UIViewController, UITableViewDataSource, UITab
     var index: Int?
     let userData = UserData.shared
     var alarmViewController: AlarmViewController!
-    let dateFormatter = DateFormatter()
     let titles = ["Repeat", "Label", "Sound", "Snooze"]
     
     @IBOutlet var alarmTimePicker: UIDatePicker!
     @IBOutlet var alarmDataTableView: UITableView!
     @IBOutlet var deleteAlarmButton: UIButton!
-    
-    @IBAction func toSaveAlarm(_ sender: UIBarButtonItem) {
-        userData.tempAlarm?.alarmTime = dateFormatter.string(from: alarmTimePicker.date)
-        if let index = index {
-            userData.alarmData[index] = userData.tempAlarm!
-        } else {
-            userData.alarmData.append(userData.tempAlarm!)
-        }
-        alarmViewController.alarmTableView.reloadData()
-        dismiss(animated: true, completion: nil)
-    }
-    
-    @IBAction func toCancelAction(_ sender: UIBarButtonItem) {
-        dismiss(animated: true, completion: nil)
-    }
-    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return titles.count
@@ -63,11 +46,70 @@ class SettingAlarmViewController: UIViewController, UITableViewDataSource, UITab
             
             return cell
         default:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "snoozeCell", for: indexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: "snoozeCell", for: indexPath) as! SettingSnoozeCell
             cell.textLabel?.text = titles[row]
             cell.textLabel?.textColor = UIColor.white
+            cell.snoozeSwitch.isOn = userData.tempAlarm!.snoozeSwitch
             return cell
         }
+    }
+    
+    fileprivate func setTableBackground() {
+        if userData.alarmData.count == 0 {
+            alarmViewController.alarmTableView.backgroundView = alarmViewController.tableViewBackground
+            alarmViewController.alarmTableView.separatorStyle = .none
+        } else {
+            alarmViewController.alarmTableView.backgroundView = UIView()
+            alarmViewController.alarmTableView.separatorStyle = .singleLine
+        }
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "h:mma"
+        
+        if let index = index {
+            let alarmIndex = userData.alarmData[index]
+            let dateComponents = DateComponents(calendar: Calendar.current, hour: alarmIndex.alarmTime.alarmHour, minute: alarmIndex.alarmTime.alarmMinute)
+            
+            userData.tempAlarm = alarmIndex
+            alarmTimePicker.setDate(dateComponents.date!, animated: false)
+            navigationItem.title = "Edit Alarm"
+        } else {
+            userData.tempAlarm = AlarmData()
+            navigationItem.title = "Add Alarm"
+            deleteAlarmButton.isHidden = true
+        }
+        
+        let backButton = UIBarButtonItem(title: "Back", style: .plain, target: self, action: nil)
+        navigationItem.backBarButtonItem = backButton
+        navigationItem.largeTitleDisplayMode = .never
+        
+        alarmTimePicker.setValue(UIColor.white, forKey: "textColor")
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        alarmDataTableView.reloadData()
+    }
+    
+    @IBAction func toSaveAlarm(_ sender: UIBarButtonItem) {
+        let datecomponents = Calendar.current.dateComponents([.hour, .minute], from: alarmTimePicker.date)
+        userData.tempAlarm!.alarmTime.alarmHour = datecomponents.hour!
+        userData.tempAlarm!.alarmTime.alarmMinute = datecomponents.minute!
+        if let index = index {
+            userData.alarmData[index] = userData.tempAlarm!
+        } else {
+            userData.alarmData.append(userData.tempAlarm!)
+        }
+        dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func toCancelAction(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -75,28 +117,17 @@ class SettingAlarmViewController: UIViewController, UITableViewDataSource, UITab
         performSegue(withIdentifier: segueIdentifier[indexPath.row], sender: self)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        if let index = index {
-            userData.tempAlarm = userData.alarmData[index]
-            navigationItem.title = "Edit Alarm"
-        } else {
-            userData.tempAlarm = AlarmData.init()
-            navigationItem.title = "Add Alarm"
-            deleteAlarmButton.isHidden = true
-        }
-        
-//        navigationItem.largeTitleDisplayMode = .never
-        dateFormatter.dateFormat = "h:mma"
-        alarmTimePicker.setValue(UIColor.white, forKey: "textColor")
+    @IBAction func toDeleteAlarm(_ sender: UIButton) {
+        userData.alarmData.remove(at: index!)
+        alarmViewController.alarmTableView.deleteRows(at: [IndexPath(row: index!, section: 0)], with: .none)
+        dismiss(animated: true, completion: nil)
     }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-//        userData.tempAlarm?.alarmLabel = PassLabel.shared.label
-        alarmDataTableView.reloadData()
-//        alarmDataTableView.scrollToNearestSelectedRow(at: <#T##UITableView.ScrollPosition#>, animated: <#T##Bool#>)
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        alarmViewController.alarmTableView.isEditing = false
+        alarmViewController.editButton.title = "Edit"
+        alarmViewController.alarmTableView.reloadData()
+        setTableBackground()
     }
+    
 }
