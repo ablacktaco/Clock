@@ -113,13 +113,18 @@ class SettingAlarmViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let segueIdentifier = ["settingRepeatSegue", "settingLabelSegue"]
-        performSegue(withIdentifier: segueIdentifier[indexPath.row], sender: self)
+        let segueIdentifier = ["settingRepeatSegue", "settingLabelSegue", "settingSoundSegue"]
+        switch indexPath.row {
+        case 0..<segueIdentifier.count:
+            performSegue(withIdentifier: segueIdentifier[indexPath.row], sender: self)
+        default:
+            break
+        }
     }
     
     @IBAction func toDeleteAlarm(_ sender: UIButton) {
         userData.alarmData.remove(at: index!)
-        alarmViewController.alarmTableView.deleteRows(at: [IndexPath(row: index!, section: 0)], with: .none)
+        alarmViewController.alarmTableView.deleteRows(at: [[0, index!]], with: .none)
         dismiss(animated: true, completion: nil)
     }
     

@@ -41,9 +41,9 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         }
         
         let accessorySwitch = UISwitch()
-//        accessorySwitch.tag = indexPath.row
+        accessorySwitch.tag = indexPath.row
         accessorySwitch.isOn = data.alarmSwitch
-//        accessorySwitch.addTarget(self, action: #selector(toChangeAlarmState(_:)), for: .valueChanged)
+        accessorySwitch.addTarget(self, action: #selector(toChangeAlarmState(_:)), for: .valueChanged)
         cell.accessoryView = accessorySwitch
         
         let indicator = UIImageView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
@@ -63,10 +63,10 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         }
     }
     
-//    @objc func toChangeAlarmState(_ sender: UISwitch) {
-//        userData.alarmData[sender.tag].alarmSwitch.toggle()
-//        alarmTableView.reloadRows(at: [[sender.tag, 0]], with: .fade)
-//    }
+    @objc func toChangeAlarmState(_ sender: UISwitch) {
+        userData.alarmData[sender.tag].alarmSwitch.toggle()
+        alarmTableView.reloadRows(at: [[0, sender.tag]], with: .fade)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
