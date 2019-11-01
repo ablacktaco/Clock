@@ -20,7 +20,7 @@
 * Choose the state of snoozing and the time u want the alarm work
 * tableView: Display the state of repeating, label, sound, snoozing and present the corresponding setting page when the tableViewCell is clicking.
 * leftBarButtonItem(Cancel): Back to the main page.
-* rightBarButtonItem(+): Back to the main page and do the things below.
+* rightBarButtonItem(Save): Back to the main page and do the things below.
   * Adding mode: Append the new data(tempAlarm) in the AlarmData array.
   * Editing mode: Update the new data(tempAlarm) to the AlarmData having corresponding index.
 
