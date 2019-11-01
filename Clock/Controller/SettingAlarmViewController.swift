@@ -31,6 +31,7 @@ class SettingAlarmViewController: UIViewController, UITableViewDataSource, UITab
             cell.textLabel?.text = titles[row]
             cell.textLabel?.textColor = UIColor.white
             
+            //DRY
             switch row {
             case 0: cell.detailTextLabel?.text = userData.tempAlarm?.alarmRepeat
             case 1: cell.detailTextLabel?.text = userData.tempAlarm?.alarmLabel
@@ -69,7 +70,7 @@ class SettingAlarmViewController: UIViewController, UITableViewDataSource, UITab
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "h:mma"
-        
+        //mu func
         if let index = index {
             let alarmIndex = userData.alarmData[index]
             let dateComponents = DateComponents(calendar: Calendar.current, hour: alarmIndex.alarmTime.alarmHour, minute: alarmIndex.alarmTime.alarmMinute)

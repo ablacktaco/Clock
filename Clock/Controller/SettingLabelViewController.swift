@@ -21,6 +21,7 @@ class SettingLabelViewController: UIViewController, UITextFieldDelegate {
         alarmLabelTextField.becomeFirstResponder()
         alarmLabelTextField.text = userData.tempAlarm!.alarmLabel
         alarmLabelTextField.clearButtonMode = .always
+        alarmLabelTextField.enablesReturnKeyAutomatically = true
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

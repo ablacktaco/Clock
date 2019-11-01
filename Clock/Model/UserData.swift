@@ -16,15 +16,20 @@ class UserData {
     
     var alarmData: [AlarmData] {
         didSet {
-            guard oldValue != self.alarmData else {return}
-            
-            UserDefaults.standard.set(try? PropertyListEncoder().encode(self.alarmData), forKey: "alarmData")
+            //zx
+            guard oldValue != self.alarmData else { return }
+            let data = self.alarmData.sorted { $0.at < $1.at }
+//            if let a = try
+            UserDefaults.standard.set(try? PropertyListEncoder().encode(data), forKey: "alarmData")
         }
     }
     
     private static func getAlarmData() -> [AlarmData] {
         if let alarmData = UserDefaults.standard.object(forKey: "alarmData") as? Data {
-            if let data = try? PropertyListDecoder().decode([AlarmData].self, from: alarmData) { return data.sorted {$0.at < $1.at} }
+            if let data = try? PropertyListDecoder().decode([AlarmData].self, from: alarmData) {
+//                return data.sorted { $0.at < $1.at }
+                return data
+            }
         }
         return []
     }

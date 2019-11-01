@@ -84,7 +84,7 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
     @IBAction func becomeEditMode(_ sender: UIBarButtonItem) {
         alarmTableView.isEditing.toggle()
         editButton.title = alarmTableView.isEditing ? "Done" : "Edit"
-        alarmTableView.reloadData()
+//        alarmTableView.reloadData()
     }
     
     @IBAction func addAlarm(_ sender: UIBarButtonItem) {
@@ -97,6 +97,7 @@ class AlarmViewController: UIViewController, UITableViewDataSource, UITableViewD
         }
     }
     
+    //MARK: tableviewAction
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let settingAlarmNavigation = storyboard?.instantiateViewController(withIdentifier: "settingAlarmNavigation") as? UINavigationController {
             if let destination = settingAlarmNavigation.viewControllers.first as? SettingAlarmViewController {
